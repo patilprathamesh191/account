@@ -19,6 +19,7 @@ pipeline {
             steps{
                 script{
                     dockerImage = docker.build("${IMAGE_NAME}:${BUILD_NUMBER}")
+                    echo "Docker image built: ${dockerImage.id}"
                 }
             }
         }
