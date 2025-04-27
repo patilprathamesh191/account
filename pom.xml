@@ -87,6 +87,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>account</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
