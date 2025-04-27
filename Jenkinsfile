@@ -4,7 +4,7 @@ pipeline {
             maven "maven_3.9.9"
         }
     environment {
-            DOCKERHUB_CREDENTIALS = 'docker_jenkin_access_token'  // Jenkins Credentials ID
+            DOCKERHUB_CREDENTIALS = 'docker_jenkin_access_token_2'  // Jenkins Credentials ID
             DOCKERHUB_USERNAME = '27871810'
             IMAGE_NAME = '27871810/springboot-app'
     }
