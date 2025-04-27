@@ -20,7 +20,7 @@ services:
       - mysql-data:/var/lib/mysql  # Correct path for MySQL data!
 
   springboot-app:
-    build: .
+    image: 27871810/springboot-app:latest
     container_name: springboot-app
     ports:
       - "8002:8002"
