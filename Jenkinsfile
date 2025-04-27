@@ -14,8 +14,7 @@ pipeline {
                 checkout([$class: 'GitSCM',
                     branches: [[name: '*/master']],
                     extensions: [],
-                    userRemoteConfigs: [[url: 'https://github.com/patilprathamesh191/account']]
-                ])
+                    userRemoteConfigs: [[url: 'https://github.com/patilprathamesh191/account']]])
             }
         }
 
@@ -28,14 +27,13 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the image with the current build number
+                    // Build Docker image with the unique build number tag
                     dockerImage = docker.build("${IMAGE_NAME}:${BUILD_NUMBER}")
 
-                    // Tag the image as 'latest' too
+                    // Tag the image as 'latest'
                     dockerImage.tag("${IMAGE_NAME}:latest")
 
-                    // Output the image ID for verification
-                    echo "Docker image built successfully: ${dockerImage.id}"
+                    echo "Docker image built with build number: ${BUILD_NUMBER} and 'latest' tag."
                 }
             }
         }
@@ -43,21 +41,20 @@ pipeline {
         stage('Push Docker Image to DockerHub') {
             steps {
                 script {
-                    // Push the image to DockerHub with both the build number and 'latest' tags
+                    // Authenticate with DockerHub and push the image
                     docker.withRegistry('https://index.docker.io/v1/', "${DOCKERHUB_CREDENTIALS}") {
-                        // Push the image with the build number tag
+                        // Ensure that both build number and 'latest' tags are pushed
+                        echo "Pushing Docker image with build number: ${BUILD_NUMBER}"
                         dockerImage.push("${BUILD_NUMBER}")
 
-                        // Push the image with the 'latest' tag
+                        echo "Pushing Docker image with 'latest' tag."
                         dockerImage.push('latest')
-
-                        echo "Docker image pushed to DockerHub with tags ${BUILD_NUMBER} and 'latest'."
                     }
                 }
             }
         }
 
-        stage('Deploy using Docker Compose') {
+        stage('Deploy with Docker Compose') {
             steps {
                 bat '''
                     docker-compose down
