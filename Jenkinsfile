@@ -26,10 +26,11 @@ pipeline {
         stage('Push Docker Image') {
                     steps {
                         script {
-                            docker.withRegistry('https://index.docker.io/v1/', "${DOCKERHUB_CREDENTIALS}") {
-                                dockerImage.push()
-                                dockerImage.push('latest')  // Optional: Tag as latest
-                            }
+                            dockerImage.tag("${IMAGE_NAME}:latest") // Create local 'latest' tag
+                                docker.withRegistry('https://index.docker.io/v1/', "${DOCKERHUB_CREDENTIALS}") {
+                                    dockerImage.push("${BUILD_NUMBER}")
+                                    dockerImage.push('latest')
+                                }
                         }
                     }
         }
