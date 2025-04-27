@@ -28,8 +28,13 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Build the image with the current build number
                     dockerImage = docker.build("${IMAGE_NAME}:${BUILD_NUMBER}")
-                    dockerImage.tag("${IMAGE_NAME}:latest") // Tagging the image as 'latest' also
+
+                    // Tag the image as 'latest' too
+                    dockerImage.tag("${IMAGE_NAME}:latest")
+
+                    // Output the image ID for verification
                     echo "Docker image built successfully: ${dockerImage.id}"
                 }
             }
@@ -38,9 +43,15 @@ pipeline {
         stage('Push Docker Image to DockerHub') {
             steps {
                 script {
+                    // Push the image to DockerHub with both the build number and 'latest' tags
                     docker.withRegistry('https://index.docker.io/v1/', "${DOCKERHUB_CREDENTIALS}") {
-                        dockerImage.push("${BUILD_NUMBER}")   // Push the build number tag
-                        dockerImage.push('latest')            // Push the latest tag
+                        // Push the image with the build number tag
+                        dockerImage.push("${BUILD_NUMBER}")
+
+                        // Push the image with the 'latest' tag
+                        dockerImage.push('latest')
+
+                        echo "Docker image pushed to DockerHub with tags ${BUILD_NUMBER} and 'latest'."
                     }
                 }
             }
