@@ -26,7 +26,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    bat 'docker build -t microservice/account .'
+                    bat 'docker build -t 27871810/account .'
                     echo "Docker image built with tag 'latest'."
                 }
             }
@@ -38,7 +38,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'doc_jen_username_pass_id', passwordVariable: 'jen_doc_password_var', usernameVariable: 'jen_doc_username_var')]) {
                         bat 'docker login -u 27871810 -p %jen_doc_password_var%'
                     }
-                    bat 'docker push microservice/account'
+                    bat 'docker push 27871810/account'
                 }
             }
         }
