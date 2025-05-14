@@ -19,18 +19,42 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql  # Correct path for MySQL data!
 
-  springboot-app:
-    image: 27871810/account:latest
-    container_name: account-app-container
+  prometheus:
+    image: prom/prometheus:v2.35.0
+    container_name: prometheus
+    restart: unless-stopped
     ports:
-      - "8002:8002"
+      - "9090:9090"
+    volumes:
+      - D:/promethus/prometheus.yaml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  grafana:
+    image: grafana/grafana-oss:8.5.2
+    pull_policy: always
+    ports:
+      - "3000:3000"
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - D:/promethus:/var/lib/grafana
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: myuser
-      SPRING_DATASOURCE_PASSWORD: root
-    depends_on:
-      mysql-db:
-        condition: service_healthy
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_DOMAIN=localhost
+
+#  springboot-app:
+#    image: account_1
+#    container_name: account-app-container-1
+#    ports:
+#      - "8002:8002"
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+#      SPRING_DATASOURCE_USERNAME: myuser
+#      SPRING_DATASOURCE_PASSWORD: root
+#    depends_on:
+#      mysql-db:
+#        condition: service_healthy
 
 volumes:
   mysql-data:
